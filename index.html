@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Detection Attendance System</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0f172a',
+                        secondary: '#1e293b',
+                        accent: '#3b82f6',
+                        light: '#f1f5f9'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1e293b; }
+        ::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
+        
+        /* Smooth scroll */
+        html { scroll-behavior: smooth; }
+        
+        /* Animations */
+        .fade-in { animation: fadeIn 0.8s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Hidden class for SPA routing */
+        .page { display: none; }
+        .page.active { display: block; }
+    </style>
+</head>
+<body class="bg-primary text-light font-sans">
+
+    <!-- Navigation Bar -->
+    <nav class="bg-secondary shadow-lg sticky top-0 z-50 border-b border-gray-700">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="#" onclick="showPage('home')" class="text-2xl font-bold text-accent flex items-center space-x-2">
+                <i class="fas fa-face-viewfinder"></i>
+                <span>FaceAttend</span>
+            </a>
+            <div class="hidden md:flex space-x-6">
+                <a href="#" onclick="showPage('home')" class="hover:text-accent transition">Home</a>
+                <a href="#" onclick="showPage('about')" class="hover:text-accent transition">About</a>
+                <a href="#" onclick="showPage('features')" class="hover:text-accent transition">Features</a>
+                <a href="#" onclick="showPage('contact')" class="hover:text-accent transition">Contact</a>
+            </div>
+            <div class="flex space-x-4">
+                <button onclick="showPage('login')" class="px-4 py-2 rounded border border-accent text-accent hover:bg-accent hover:text-white transition">Login</button>
+                <button onclick="showPage('register')" class="px-4 py-2 rounded bg-accent text-white hover:bg-blue-600 transition hidden md:block">Register</button>
+            </div>
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden text-xl" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></button>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-secondary pb-4">
+            <a href="#" onclick="showPage('home')" class="block px-4 py-2 hover:bg-primary">Home</a>
+            <a href="#" onclick="showPage('about')" class="block px-4 py-2 hover:bg-primary">About</a>
+            <a href="#" onclick="showPage('features')" class="block px-4 py-2 hover:bg-primary">Features</a>
+            <a href="#" onclick="showPage('login')" class="block px-4 py-2 hover:bg-primary">Login</a>
+        </div>
+    </nav>
+
+    <!-- ===================== PAGE: HOME ===================== -->
+    <div id="home" class="page active">
+        <!-- Hero Section -->
+        <section class="relative bg-gradient-to-br from-primary to-secondary min-h-screen flex items-center justify-center overflow-hidden">
+            <!-- Tech Background Grid -->
+            <div class="absolute inset-0 opacity-10 bg-grid-pattern"></div>
+            <div class="container mx-auto px-6 text-center z-10 fade-in">
+                <h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">
+                    Next-Gen <span class="text-accent">Attendance</span> System
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+                    Secure, Fast, and Contactless. Powered by Java Spring Boot and OpenCV Facial Recognition Technology.
+                </p>
+                <div class="flex justify-center space-x-4">
+                    <button onclick="showPage('register')" class="px-8 py-4 bg-accent text-white rounded-lg text-lg font-semibold hover:bg-blue-500 transform hover:scale-105 transition shadow-lg shadow-blue-500/30">
+                        Get Started <i class="fas fa-arrow-right ml-2"></i>
+                    </button>
+                    <button onclick="showPage('about')" class="px-8 py-4 bg-transparent border-2 border-gray-500 text-light rounded-lg text-lg hover:border-accent hover:text-accent transition">
+                        Learn More
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Key Features Brief -->
+        <section class="py-20 bg-secondary">
+            <div class="container mx-auto px-6">
+                <h2 class="text-3xl font-bold text-center mb-12">Why Choose <span class="text-accent">FaceAttend</span>?</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-primary p-8 rounded-lg text-center hover:shadow-xl hover:shadow-blue-500/10 transition border border-gray-700">
+                        <i class="fas fa-bolt text-4xl text-accent mb-4"></i>
+                        <h3 class="text-xl font-bold mb-2">Real-time Detection</h3>
+                        <p class="text-gray-400">Mark attendance in milliseconds with live camera feed processing.</p>
+                    </div>
+                    <div class="bg-primary p-8 rounded-lg text-center hover:shadow-xl hover:shadow-blue-500/10 transition border border-gray-700">
+                        <i class="fas fa-shield-halved text-4xl text-accent mb-4"></i>
+                        <h3 class="text-xl font-bold mb-2">Secure Data</h3>
+                        <p class="text-gray-400">Encrypted face embeddings and JWT-based authentication.</p>
+                    </div>
+                    <div class="bg-primary p-8 rounded-lg text-center hover:shadow-xl hover:shadow-blue-500/10 transition border border-gray-700">
+                        <i class="fas fa-file-excel text-4xl text-accent mb-4"></i>
+                        <h3 class="text-xl font-bold mb-2">Instant Reports</h3>
+                        <p class="text-gray-400">Download attendance reports in Excel and PDF formats instantly.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ===================== PAGE: ABOUT ===================== -->
+    <div id="about" class="page">
+        <div class="container mx-auto px-6 py-20">
+            <h2 class="text-4xl font-bold text-center mb-12 fade-in">How It Works</h2>
+            
+            <div class="grid md:grid-cols-2 gap-12 items-center mb-20">
+                <div>
+                    <h3 class="text-2xl font-bold text-accent mb-4">The Technology Stack</h3>
+                    <p class="text-gray-300 mb-6">
+                        Our system leverages the power of <strong>Java Spring Boot</strong> for robust backend logic and <strong>OpenCV</strong> for advanced computer vision capabilities. 
+                        Face embeddings are stored securely in <strong>MySQL</strong>, ensuring high availability and data integrity.
+                    </p>
+                    <ul class="space-y-3">
+                        <li class="flex items-center"><i class="fab fa-java text-2xl text-orange-400 mr-3"></i> Java 17 & Spring Boot 3</li>
+                        <li class="flex items-center"><i class="fas fa-database text-2xl text-blue-400 mr-3"></i> MySQL Database</li>
+                        <li class="flex items-center"><i class="fas fa-eye text-2xl text-green-400 mr-3"></i> OpenCV for Face Detection</li>
+                        <li class="flex items-center"><i class="fab fa-html5 text-2xl text-red-400 mr-3"></i> Modern Responsive UI</li>
+                    </ul>
+                </div>
+                <div class="bg-secondary p-8 rounded-xl border border-gray-700 shadow-2xl">
+                    <h4 class="text-xl font-bold mb-4">System Workflow</h4>
+                    <div class="space-y-4 text-gray-300">
+                        <div class="flex items-center">
+                            <span class="w-8 h-8 bg-accent rounded-full flex items-center justify-center mr-3 text-sm font-bold">1</span>
+                            User registers face via webcam.
+                        </div>
+                        <div class="flex items-center">
+                            <span class="w-8 h-8 bg-accent rounded-full flex items-center justify-center mr-3 text-sm font-bold">2</span>
+                            System extracts facial features (embeddings).
+                        </div>
+                        <div class="flex items-center">
+                            <span class="w-8 h-8 bg-accent rounded-full flex items-center justify-center mr-3 text-sm font-bold">3</span>
+                            Data is encrypted and saved to MySQL.
+                        </div>
+                        <div class="flex items-center">
+                            <span class="w-8 h-8 bg-accent rounded-full flex items-center justify-center mr-3 text-sm font-bold">4</span>
+                            Admin starts attendance session.
+                        </div>
+                        <div class="flex items-center">
+                            <span class="w-8 h-8 bg-accent rounded-full flex items-center justify-center mr-3 text-sm font-bold">5</span>
+                            Faces recognized & attendance logged automatically.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== PAGE: FEATURES ===================== -->
+    <div id="features" class="page">
+        <div class="container mx-auto px-6 py-20">
+            <h2 class="text-4xl font-bold text-center mb-4">System Features</h2>
+            <p class="text-gray-400 text-center mb-12 max-w-2xl mx-auto">Comprehensive tools to manage attendance efficiently and securely.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="bg-secondary p-6 rounded-lg border border-gray-700 hover:border-accent transition">
+                    <div class="w-12 h-12 bg-accent/20 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-user-plus text-accent text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Face Registration</h3>
+                    <p class="text-gray-400">Seamless capture and registration of user faces with multiple angles for higher accuracy.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="bg-secondary p-6 rounded-lg border border-gray-700 hover:border-accent transition">
+                    <div class="w-12 h-12 bg-accent/20 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-brain text-accent text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Face Recognition</h3>
+                    <p class="text-gray-400">Advanced AI algorithms to identify individuals even in crowded environments.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="bg-secondary p-6 rounded-lg border border-gray-700 hover:border-accent transition">
+                    <div class="w-12 h-12 bg-accent/20 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-clock text-accent text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Real-time Marking</h3>
+                    <p class="text-gray-400">Instantaneous attendance marking with precise timestamp recording.</p>
+                </div>
+                <!-- Card 4 -->
+                <div class="bg-secondary p-6 rounded-lg border border-gray-700 hover:border-accent transition">
+                    <div class="w-12 h-12 bg-accent/20 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-user-shield text-accent text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Admin Dashboard</h3>
+                    <p class="text-gray-400">Centralized control panel to manage users, courses, and attendance sessions.</p>
+                </div>
+                <!-- Card 5 -->
+                <div class="bg-secondary p-6 rounded-lg border border-gray-700 hover:border-accent transition">
+                    <div class="w-12 h-12 bg-accent/20 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-download text-accent text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Export Reports</h3>
+                    <p class="text-gray-400">Generate detailed attendance reports in Excel and PDF formats.</p>
+                </div>
+                <!-- Card 6 -->
+                <div class="bg-secondary p-6 rounded-lg border border-gray-700 hover:border-accent transition">
+                    <div class="w-12 h-12 bg-accent/20 rounded-lg flex items-center justify-center mb-4">
+                        <i class="fas fa-lock text-accent text-xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">Secure Login</h3>
+                    <p class="text-gray-400">Role-based access control (Admin/Student/Teacher) with encrypted credentials.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== PAGE: LOGIN ===================== -->
+    <div id="login" class="page">
+        <div class="min-h-screen flex items-center justify-center py-12 px-4">
+            <div class="bg-secondary w-full max-w-md p-8 rounded-xl shadow-2xl border border-gray-700 fade-in">
+                <div class="text-center mb-8">
+                    <i class="fas fa-user-circle text-5xl text-accent mb-4"></i>
+                    <h2 class="text-2xl font-bold">Welcome Back</h2>
+                    <p class="text-gray-400">Login to your account</p>
+                </div>
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="mb-4">
+                        <label class="block text-sm mb-2">Username</label>
+                        <input type="text" class="w-full p-3 bg-primary border border-gray-600 rounded focus:outline-none focus:border-accent" placeholder="Enter username" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-sm mb-2">Password</label>
+                        <input type="password" class="w-full p-3 bg-primary border border-gray-600 rounded focus:outline-none focus:border-accent" placeholder="Enter password" required>
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-sm mb-2">Login As</label>
+                        <select class="w-full p-3 bg-primary border border-gray-600 rounded focus:outline-none focus:border-accent">
+                            <option>Student</option>
+                            <option>Teacher</option>
+                            <option>Admin</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full py-3 bg-accent rounded font-bold hover:bg-blue-500 transition">Login</button>
+                    <div class="flex justify-between mt-4 text-sm">
+                        <a href="#" class="text-gray-400 hover:text-accent">Forgot Password?</a>
+                        <a href="#" onclick="showPage('register')" class="text-accent hover:underline">Create Account</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== PAGE: REGISTER ===================== -->
+    <div id="register" class="page">
+        <div class="min-h-screen flex items-center justify-center py-12 px-4">
+            <div class="bg-secondary w-full max-w-2xl p-8 rounded-xl shadow-2xl border border-gray-700 fade-in">
+                <h2 class="text-2xl font-bold text-center mb-6">Student Registration</h2>
+                <form class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm mb-2">Full Name</label>
+                        <input type="text" class="w-full p-3 bg-primary border border-gray-600 rounded focus:outline-none focus:border-accent" placeholder="John Doe">
+                    </div>
+                    <div>
+                        <label class="block text-sm mb-2">Email Address</label>
+                        <input type="email" class="w-full p-3 bg-primary border border-gray-600 rounded focus:outline-none focus:border-accent" placeholder="john@example.com">
+                    </div>
+                    <div>
+                        <label class="block text-sm mb-2">Roll Number</label>
+                        <input type="text" class="w-full p-3 bg-primary border border-gray-600 rounded focus:outline-none focus:border-accent" placeholder="2023-CS-001">
+                    </div>
+                    <div>
+                        <label class="block text-sm mb-2">Department</label>
+                        <select class="w-full p-3 bg-primary border border-gray-600 rounded focus:outline-none focus:border-accent">
+                            <option>Computer Science</option>
+                            <option>Electrical Engineering</option>
+                            <option>Mechanical Engineering</option>
+                            <option>Business Admin</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Face Capture Section -->
+                    <div class="md:col-span-2 border border-dashed border-gray-600 rounded-lg p-6 text-center">
+                        <i class="fas fa-camera text-4xl text-gray-500 mb-3"></i>
+                        <p class="text-gray-400 mb-3">Capture your face for registration</p>
+                        <video id="videoRegister" class="w-full max-w-xs mx-auto bg-black rounded mb-3 hidden"></video>
+                        <canvas id="canvasRegister" class="hidden"></canvas>
+                        <img id="previewRegister" class="w-full max-w-xs mx-auto rounded mb-3 hidden">
+                        
+                        <button type="button" onclick="startCamera('videoRegister')" class="px-4 py-2 bg-gray-600 rounded hover:bg-gray-500 transition mr-2">
+                            <i class="fas fa-video mr-2"></i>Start Camera
+                        </button>
+                        <button type="button" onclick="capturePhoto()" class="px-4 py-2 bg-accent rounded hover:bg-blue-500 transition">
+                            <i class="fas fa-camera-retro mr-2"></i>Capture
+                        </button>
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <button type="button" onclick="showPage('dashboard')" class="w-full py-3 bg-green-500 rounded font-bold hover:bg-green-600 transition text-white">
+                            Register & Proceed
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== PAGE: DASHBOARD (ADMIN) ===================== -->
+    <div id="dashboard" class="page">
+        <div class="flex min-h-screen">
+            <!-- Sidebar -->
+            <aside class="w-64 bg-secondary border-r border-gray-700 p-6 hidden md:block">
+                <h3 class="text-xl font-bold text-accent mb-8">Admin Panel</h3>
+                <nav class="space-y-4">
+                    <a href="#" onclick="loadDashboardSection('overview')" class="flex items-center text-gray-300 hover:text-white p-2 rounded hover:bg-primary transition">
+                        <i class="fas fa-tachometer-alt mr-3"></i> Dashboard
+                    </a>
+                    <a href="#" onclick="loadDashboardSection('users')" class="flex items-center text-gray-300 hover:text-white p-2 rounded hover:bg-primary transition">
+                        <i class="fas fa-users mr-3"></i> Registered Users
+                    </a>
+                    <a href="#" onclick="showPage('attendance')" class="flex items-center text-gray-300 hover:text-white p-2 rounded hover:bg-primary transition">
+                        <i class="fas fa-calendar-check mr-3"></i> Live Attendance
+                    </a>
+                    <a href="#" class="flex items-center text-gray-300 hover:text-white p-2 rounded hover:bg-primary transition">
+                        <i class="fas fa-file-export mr-3"></i> Export Data
+                    </a>
+                    <a href="#" onclick="showPage('login')" class="flex items-center text-red-400 hover:text-red-300 p-2 rounded hover:bg-primary transition mt-10">
+                        <i class="fas fa-sign-out-alt mr-3"></i> Logout
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="flex-1 p-8 bg-primary">
+                <div class="flex justify-between items-center mb-8">
+                    <div>
+                        <h2 class="text-3xl font-bold">Dashboard Overview</h2>
+                        <p class="text-gray-400">Welcome back, Admin</p>
+                    </div>
+                    <button onclick="showPage('attendance')" class="px-6 py-3 bg-accent rounded-lg font-bold hover:bg-blue-500 flex items-center">
+                        <i class="fas fa-play mr-2"></i> Start Attendance Session
+                    </button>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-secondary p-6 rounded-lg border-l-4 border-blue-500">
+                        <p class="text-gray-400">Total Students</p>
+                        <h3 class="text-3xl font-bold">1,240</h3>
+                    </div>
+                    <div class="bg-secondary p-6 rounded-lg border-l-4 border-green-500">
+                        <p class="text-gray-400">Present Today</p>
+                        <h3 class="text-3xl font-bold">1,120</h3>
+                    </div>
+                    <div class="bg-secondary p-6 rounded-lg border-l-4 border-yellow-500">
+                        <p class="text-gray-400">Absent</p>
+                        <h3 class="text-3xl font-bold">120</h3>
+                    </div>
+                    <div class="bg-secondary p-6 rounded-lg border-l-4 border-purple-500">
+                        <p class="text-gray-400">Departments</p>
+                        <h3 class="text-3xl font-bold">5</h3>
+                    </div>
+                </div>
+
+                <!-- User Table -->
+                <div class="bg-secondary rounded-lg overflow-hidden">
+                    <div class="p-6 border-b border-gray-700 flex justify-between">
+                        <h3 class="text-xl font-bold">Recently Registered</h3>
+                        <button class="text-sm text-accent hover:underline">View All</button>
+                    </div>
+                    <table class="w-full text-left">
+                        <thead class="bg-primary">
+                            <tr>
+                                <th class="p-4">ID</th>
+                                <th class="p-4">Name</th>
+                                <th class="p-4">Department</th>
+                                <th class="p-4">Date</th>
+                                <th class="p-4">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-gray-700 hover:bg-primary transition">
+                                <td class="p-4">#1023</td>
+                                <td class="p-4">Alice Johnson</td>
+                                <td class="p-4">Computer Science</td>
+                                <td class="p-4">2023-10-27</td>
+                                <td class="p-4 text-accent"><button class="hover:underline">Edit</button> | <button class="text-red-400 hover:underline">Delete</button></td>
+                            </tr>
+                            <tr class="border-b border-gray-700 hover:bg-primary transition">
+                                <td class="p-4">#1024</td>
+                                <td class="p-4">Bob Smith</td>
+                                <td class="p-4">Engineering</td>
+                                <td class="p-4">2023-10-27</td>
+                                <td class="p-4 text-accent"><button class="hover:underline">Edit</button> | <button class="text-red-400 hover:underline">Delete</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- ===================== PAGE: ATTENDANCE ===================== -->
+    <div id="attendance" class="page">
+        <div class="container mx-auto px-6 py-10">
+            <h2 class="text-3xl font-bold mb-6 text-center">Live Attendance Session</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Camera Feed -->
+                <div class="md:col-span-2 bg-secondary rounded-lg p-4 border border-gray-700">
+                    <div class="aspect-video bg-black rounded overflow-hidden relative">
+                        <video id="videoAttendance" class="w-full h-full object-cover" autoplay muted playsinline></video>
+                        <div class="absolute top-4 left-4 px-3 py-1 bg-red-500 text-white text-sm rounded-full flex items-center animate-pulse">
+                            <i class="fas fa-circle mr-2 text-xs"></i> LIVE
+                        </div>
+                        <!-- Face detection overlay simulation -->
+                        <div class="absolute top-1/4 left-1/3 w-24 h-28 border-2 border-green-400 rounded-sm"></div>
+                    </div>
+                    <div class="flex justify-center mt-4 space-x-4">
+                        <button onclick="startCamera('videoAttendance')" class="px-6 py-2 bg-accent rounded hover:bg-blue-500">Start Camera</button>
+                        <button onclick="markAttendance()" class="px-6 py-2 bg-green-600 rounded hover:bg-green-700">Mark Attendance</button>
+                    </div>
+                </div>
+
+                <!-- Recognized List -->
+                <div class="bg-secondary rounded-lg p-6 border border-gray-700">
+                    <h3 class="text-xl font-bold mb-4 border-b border-gray-600 pb-2">Recognized Faces</h3>
+                    <div id="attendanceList" class="space-y-4 max-h-96 overflow-y-auto">
+                        <!-- Dummy Data -->
+                        <div class="flex items-center bg-primary p-3 rounded">
+                            <div class="w-10 h-10 bg-gray-600 rounded-full mr-3 flex items-center justify-center text-xs">Pic</div>
+                            <div>
+                                <p class="font-bold">John Doe</p>
+                                <p class="text-xs text-gray-400">ID: 2023-CS-01</p>
+                            </div>
+                            <span class="ml-auto text-xs text-green-400">09:02 AM</span>
+                        </div>
+                        <div class="flex items-center bg-primary p-3 rounded">
+                            <div class="w-10 h-10 bg-gray-600 rounded-full mr-3 flex items-center justify-center text-xs">Pic</div>
+                            <div>
+                                <p class="font-bold">Jane Smith</p>
+                                <p class="text-xs text-gray-400">ID: 2023-CS-02</p>
+                            </div>
+                            <span class="ml-auto text-xs text-green-400">09:05 AM</span>
+                        </div>
+                    </div>
+                    <button class="w-full mt-6 py-2 border border-accent text-accent rounded hover:bg-accent hover:text-white transition">
+                        <i class="fas fa-save mr-2"></i> Save Session
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== PAGE: CONTACT ===================== -->
+    <div id="contact" class="page">
+        <div class="container mx-auto px-6 py-20">
+            <h2 class="text-4xl font-bold text-center mb-12">Contact Us</h2>
+            <div class="grid md:grid-cols-2 gap-12">
+                <div>
+                    <h3 class="text-2xl font-bold mb-4">Get in touch</h3>
+                    <p class="text-gray-400 mb-8">Have questions about the system or need support? Reach out to our team.</p>
+                    <div class="space-y-4">
+                        <div class="flex items-center"><i class="fas fa-envelope text-accent w-8"></i> support@faceattend.com</div>
+                        <div class="flex items-center"><i class="fas fa-phone text-accent w-8"></i> +1 (555) 123-4567</div>
+                        <div class="flex items-center"><i class="fas fa-map-marker-alt text-accent w-8"></i> Tech Park, Silicon Valley</div>
+                    </div>
+                </div>
+                <div class="bg-secondary p-8 rounded-xl border border-gray-700">
+                    <form>
+                        <input type="text" placeholder="Your Name" class="w-full p-3 mb-4 bg-primary border border-gray-600 rounded focus:outline-none focus:border-accent">
+                        <input type="email" placeholder="Your Email" class="w-full p-3 mb-4 bg-primary border border-gray-600 rounded focus:outline-none focus:border-accent">
+                        <textarea placeholder="Message" rows="4" class="w-full p-3 mb-4 bg-primary border border-gray-600 rounded focus:outline-none focus:border-accent"></textarea>
+                        <button class="w-full py-3 bg-accent rounded hover:bg-blue-500 transition font-bold">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-secondary border-t border-gray-700 py-8 mt-auto">
+        <div class="container mx-auto px-6 text-center text-gray-400">
+            <div class="flex justify-center space-x-6 mb-4">
+                <a href="#" class="hover:text-accent"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="hover:text-accent"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="hover:text-accent"><i class="fab fa-github"></i></a>
+            </div>
+            <p>&copy; 2023 Face Detection Attendance System. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript for UI Logic -->
+    <script>
+        // Simple Router
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Mock Login Handler
+        function handleLogin(event) {
+            event.preventDefault();
+            // Simulate login success
+            alert("Login Successful! Redirecting to Dashboard...");
+            showPage('dashboard');
+        }
+
+        // Mock Attendance Handler
+        function markAttendance() {
+            const list = document.getElementById('attendanceList');
+            const names = ["Mike Ross", "Rachel Zane", "Harvey Specter"];
+            const randomName = names[Math.floor(Math.random() * names.length)];
+            const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            
+            const newItem = document.createElement('div');
+            newItem.className = "flex items-center bg-primary p-3 rounded fade-in";
+            newItem.innerHTML = `
+                <div class="w-10 h-10 bg-gray-600 rounded-full mr-3 flex items-center justify-center text-xs">Pic</div>
+                <div>
+                    <p class="font-bold">${randomName}</p>
+                    <p class="text-xs text-gray-400">ID: ${Math.floor(Math.random() * 1000)}</p>
+                </div>
+                <span class="ml-auto text-xs text-green-400">${time}</span>
+            `;
+            list.prepend(newItem);
+        }
+
+        // Camera Logic (WebRTC)
+        async function startCamera(videoId) {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const video = document.getElementById(videoId);
+                video.srcObject = stream;
+                video.classList.remove('hidden');
+                if (videoId === 'videoRegister') {
+                    document.getElementById('previewRegister').classList.add('hidden');
+                }
+            } catch (err) {
+                alert("Camera access denied. Please enable camera permissions.");
+                console.error(err);
+            }
+        }
+
+        function capturePhoto() {
+            const video = document.getElementById('videoRegister');
+            const canvas = document.getElementById('canvasRegister');
+            const preview = document.getElementById('previewRegister');
+            
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0);
+            
+            const dataUrl = canvas.toDataURL('image/png');
+            preview.src = dataUrl;
+            preview.classList.remove('hidden');
+            video.classList.add('hidden');
+            
+            // Stop camera stream
+            const stream = video.srcObject;
+            const tracks = stream.getTracks();
+            tracks.forEach(track => track.stop());
+        }
+    </script>
+</body>
+</html>
