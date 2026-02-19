@@ -1,0 +1,20 @@
+FaceAttendanceSystem/
+├── src/main/java/com/faceattendance/app/
+│   ├── controller/
+│   │   ├── AuthController.java
+│   │   ├── UserController.java
+│   │   └── AttendanceController.java
+│   ├── service/
+│   │   ├── FaceRecognitionService.java
+│   │   └── UserDetailsServiceImpl.java
+│   ├── repository/
+│   │   ├── UserRepository.java
+│   │   └── AttendanceRepository.java
+│   ├── model/
+│   │   ├── User.java
+│   │   └── Attendance.java
+│   └── security/
+│       └── SecurityConfig.java
+├── src/main/resources/
+│   └── application.properties
+└── pom.xml
